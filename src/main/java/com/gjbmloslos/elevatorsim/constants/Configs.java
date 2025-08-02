@@ -1,4 +1,4 @@
-package com.gjbmloslos.elevatorsim;
+package com.gjbmloslos.elevatorsim.constants;
 
 public class Configs {
        public static int maxFloor = 2;
