@@ -1,8 +1,9 @@
 package com.gjbmloslos.elevatorsim;
 
+import com.gjbmloslos.elevatorsim.constants.Configs;
+import com.gjbmloslos.elevatorsim.constants.UIConfigs;
 import com.gjbmloslos.elevatorsim.entities.Elevator;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -10,7 +11,7 @@ import javafx.scene.paint.Color;
 
 public class HelloController {
     @FXML
-    private VBox root;
+    private StackPane root;
 
     @FXML
     protected void setUp() {
@@ -21,61 +22,66 @@ public class HelloController {
     }
 
     private void setUpFloors(){
-        Insets insets = new Insets(0,50,0,50);
+        VBox floorsWrapper = new VBox();
+        StackPane.setMargin(floorsWrapper, UIConfigs.WrapperMarginPadding);
+        floorsWrapper.setPadding(UIConfigs.WrapperMarginPadding);
+        floorsWrapper.setBackground(UIConfigs.floorWrapperColor);
+        floorsWrapper.setAlignment(Pos.BOTTOM_CENTER);
 
-        Border border = new Border(
-                            new BorderStroke(
-                                    Color.DARKGRAY,
-                                    BorderStrokeStyle.SOLID,
-                                    CornerRadii.EMPTY,
-                                    new BorderWidths(20,10,20,10)
-                            ));
+        floorsWrapper.setPrefHeight(Configs.maxFloor*UIConfigs.floorHeight);
+        floorsWrapper.setMaxHeight(Configs.maxFloor*UIConfigs.floorHeight);
+        floorsWrapper.prefWidthProperty().bind(root.widthProperty());
+
         for(int i=1;i<=Configs.maxFloor;i++){
-            VBox floorContainer = new VBox();
-            HBox elevatorRow = new HBox();
-
-            floorContainer.setBackground(Background.fill(Color.web("#457B9D")));
-            floorContainer.setBorder(border);
-            VBox.setMargin(floorContainer,insets);
-            floorContainer.prefWidthProperty().bind(root.prefWidthProperty());
-            floorContainer.setMinHeight(200);
-
-            elevatorRow.setMaxHeight(Double.MAX_VALUE);
-            elevatorRow.prefWidthProperty().bind(floorContainer.prefWidthProperty());
-            VBox.setVgrow(elevatorRow, Priority.ALWAYS);
-
-            for(int j = 1; j<=Configs.elevatorNum; j++){
-                makeElevatorShaft(elevatorRow);
-            }
-
-            floorContainer.getChildren().add(elevatorRow);
-            root.getChildren().add(floorContainer);
+            VBox floor = new VBox();
+            floor.setBackground(UIConfigs.floorColor);
+            VBox.setMargin(floor, UIConfigs.floorMargin);
+            floor.prefWidthProperty().bind(floorsWrapper.prefWidthProperty());
+            floor.setPrefHeight(UIConfigs.floorHeight);
+            floorsWrapper.getChildren().add(floor);
         }
-//        spawnElevators();
-//        spawnPeople();
+
+        HBox shaftWrapper = new HBox();
+        for(int i=1;i<=Configs.elevatorNum;i++){
+            VBox elevatorShaft = makeElevatorShaft();
+            elevatorShaft.prefHeightProperty().bind(floorsWrapper.heightProperty());
+            elevatorShaft.getChildren().add(spawnElevator(true)); //tempParam
+            shaftWrapper.getChildren().add(elevatorShaft);
+        }
+        StackPane.setMargin(shaftWrapper, UIConfigs.WrapperMarginPadding);
+        shaftWrapper.setPadding(UIConfigs.WrapperMarginPadding);
+
+        shaftWrapper.prefWidthProperty().bind(root.widthProperty());
+        shaftWrapper.prefHeightProperty().bind(floorsWrapper.heightProperty());
+        shaftWrapper.maxHeightProperty().bind(floorsWrapper.heightProperty());
+
+        root.getChildren().addAll(floorsWrapper,shaftWrapper);
     }
 
-    private void makeElevatorShaft(HBox elevatorRow){
+    private VBox makeElevatorShaft(){
         VBox elevatorShaft = new VBox();
-        elevatorShaft.setMinWidth(50);
-        elevatorShaft.setMaxWidth(50);
-        elevatorShaft.prefHeightProperty().bind(elevatorRow.heightProperty());
-        Insets insets = new Insets(0,5,0,5);
-        HBox.setMargin(elevatorShaft,insets);
-        elevatorShaft.setBackground(Background.fill(Color.web("#F1FAEE")));
-        elevatorShaft.setAlignment(Pos.BOTTOM_CENTER);
-
-        elevatorRow.getChildren().add(elevatorShaft);
+        elevatorShaft.setPrefWidth(UIConfigs.elevatorWidth*1.5);
+        HBox.setMargin(elevatorShaft,UIConfigs.shaftMargins);
+        elevatorShaft.setBackground(UIConfigs.shaftColor);
+        //spawnElevator
+        return elevatorShaft;
     }
-     private void spawnElevator(VBox shaft){
+
+    private VBox spawnElevator(Boolean isEmployee){
         Elevator.setSpeed(Configs.speed);
         Elevator.setMaxFloor(Configs.maxFloor);
         Elevator.setCapacity(Configs.maxCapacity);
         VBox elevator = new VBox();
-        elevator.setBackground(Background.fill(Color.web("#")));
-        elevator.prefHeightProperty().bind(shaft.heightProperty());
+        Elevator elevatorEntity = new Elevator(isEmployee,1,true);
+        //TODO: put the VBox inside Elevator.class, preserves reference &
 
-        shaft.getChildren().add(elevator);
+        elevator.setPrefWidth(UIConfigs.elevatorWidth);
+        HBox.setMargin(elevator,UIConfigs.shaftMargins);
+//        if(isStudent){
+//            elevator.setBackground(UIConfigs.studentElevColor);
+//            elevator.set
+//        }
+        return elevator;
     }
 
     private void spawnPeople(){
