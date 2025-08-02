@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 public class Elevator {
-    private int shaft;
+    private boolean forEmployee;
     private int floor;
     private boolean goingUp;
     private static double speed;
@@ -14,8 +14,8 @@ public class Elevator {
 
     private static final Logger logger = Logger.getLogger(Elevator.class.getName());
 
-    public Elevator(int shaft, int floor, boolean goingUp) {
-        this.shaft = shaft;
+    public Elevator(boolean forEmployee, int floor, boolean goingUp) {
+        this.forEmployee = forEmployee;
         this.floor = floor;
         this.goingUp = goingUp;
     }
@@ -36,7 +36,6 @@ public class Elevator {
                 logger.fine("Elevator direction change, going down");
             }
         }
-        dropOff();
     }
 
     public void pickup(Person person){
@@ -65,7 +64,7 @@ public class Elevator {
         return false;
     }
 
-    public void dropOff() {
+    public void checkDropoff(){
         Iterator<Person> iterator = persons.iterator();
         while (iterator.hasNext()) {
             Person person = iterator.next();
@@ -74,6 +73,9 @@ public class Elevator {
                 logger.fine("Dropped off person " + person.getId() + " at " + floor);
             }
         }
+    }
+
+    public void dropOff() {
     }
 
     public static int getCapacity() {
@@ -100,28 +102,10 @@ public class Elevator {
         this.goingUp = goingUp;
     }
 
-    public int getShaft() {
-        return shaft;
-    }
-
-    public void setShaft(int shaft) {
-        this.shaft = shaft;
-    }
-
-    public static int getMaxFloor() {
-        return maxFloor;
-    }
-
     public static void setMaxFloor(int maxFloor) {
         Elevator.maxFloor = maxFloor;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
-    public static void setSpeed(double speed) {
-        Elevator.speed = speed;
-    }
+    public static void setSpeed(double speed) {Elevator.speed = speed;}
 
 }

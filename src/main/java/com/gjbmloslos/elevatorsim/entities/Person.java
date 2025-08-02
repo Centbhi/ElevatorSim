@@ -1,6 +1,9 @@
 package com.gjbmloslos.elevatorsim.entities;
 
+import java.util.logging.Logger;
+
 public class Person {
+    private static final Logger logger = Logger.getLogger(Person.class.getName());
     private int id;
     private String role;
     private int currFloor;
