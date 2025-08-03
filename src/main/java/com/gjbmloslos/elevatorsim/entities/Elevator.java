@@ -1,5 +1,8 @@
 package com.gjbmloslos.elevatorsim.entities;
 
+import com.gjbmloslos.elevatorsim.constants.UIConfigs;
+import javafx.scene.layout.VBox;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -11,6 +14,7 @@ public class Elevator {
     private static double speed;
     private static int capacity;
     private static int maxFloor;
+    private VBox vbox;
 
     private static final Logger logger = Logger.getLogger(Elevator.class.getName());
 
@@ -18,6 +22,12 @@ public class Elevator {
         this.forEmployee = forEmployee;
         this.floor = floor;
         this.goingUp = goingUp;
+        this.vbox = new VBox();
+        if(forEmployee){
+            vbox.setBackground(UIConfigs.employeeElevColor);
+        }else{
+            vbox.setBackground(UIConfigs.studentElevColor);
+        }
     }
 
     private ArrayList<Person> persons = new ArrayList<>();
@@ -80,6 +90,10 @@ public class Elevator {
 
     public static int getCapacity() {
         return capacity;
+    }
+
+    public VBox getVbox() {
+        return vbox;
     }
 
     public static void setCapacity(int capacity) {
